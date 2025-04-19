@@ -3,6 +3,9 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Ukrainian } from "flatpickr/dist/l10n/uk.js";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
+
 
 const clickBtn = document.querySelector('button[data-start]');
 
@@ -23,19 +26,21 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
       userSelectedDate = selectedDates[0].getTime();
-        if (userSelectedDate < currentTime) {
-            window.alert("Please choose a date in the future")
+      if (userSelectedDate < currentTime) {
+            showMsg("Please choose a date in the future", "red")
         }
         
     },
 };
 
+
+
 flatpickr("#datetime-picker", options);
 
 class Count {    
     constructor() {
-        this.rangeTime,
-        this.idTimer = false
+        this.rangeTime,  
+        this.idTimer = ''
     }
 
     startTimer() {
@@ -46,24 +51,21 @@ class Count {
         this.rangeTime = userSelectedDate - currentTime;
         document.getElementById('datetime-picker').disabled = true;
         clickBtn.disabled = true;
-        this.idTimer = true;
+    
         console.log("rangeTime ", this.rangeTime);
-            setInterval(() => {
+            this.idTimer = setInterval(() => {
                 this.rangeTime -= 1000;
                 if (this.rangeTime <= 0) {
                     clickBtn.disabled = false;
+
                     document.getElementById('datetime-picker').disabled = false;
-                    clearInterval(this.idTimer);
-                    this.idTimer = false;
                     console.log("stop interval", this.idTimer);
+                    clearInterval(this.idTimer);
+                    this.idTimer = '';
+                    // console.log("stop interval", this.idTimer);
                     return;
                 }
-                let { days, hours, minutes, seconds } = convertMs(this.rangeTime);
-                secondTeg.textContent = seconds;
-                minuteTeg.textContent = minutes;
-                hourTeg.textContent = hours;
-                daysTeg.textContent = days;
-                console.log( days, hours, minutes, seconds);
+                setTime(convertMs(this.rangeTime));
         }, 1000);
     }
 }
@@ -98,3 +100,22 @@ function convertMs(ms) {
 function pad(value) {
         return String(value).padStart(2, "0");
     }
+
+function setTime({ days, hours, minutes, seconds }) {
+    secondTeg.textContent = seconds;
+    minuteTeg.textContent = minutes;
+    hourTeg.textContent = hours;
+    daysTeg.textContent = days;
+    console.log(days, hours, minutes, seconds);
+    return
+}
+
+function showMsg(msg, color) {
+    iziToast.show({
+                    message: msg,
+                    backgroundColor: color, 
+                    messageColor: 'white',
+                    position:'topRight'
+    
+});
+}

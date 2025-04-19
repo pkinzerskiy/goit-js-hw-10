@@ -10,7 +10,7 @@ btn.addEventListener("click", handleBtn);
 let delay;
 const num = document.querySelector('input');
 num.addEventListener("input", (event) => {
-    // console.log("form-input", event.target.value);
+    console.log("form-input", event.target.value);
     delay = event.target.value;
 });
 
@@ -21,7 +21,7 @@ let states = document.querySelectorAll('input[type="radio"]');
 function handleBtn(event) {
     event.preventDefault();
 
-    let state
+    let state;
  
     states.forEach(el => {
         if (el.checked) {
@@ -30,28 +30,26 @@ function handleBtn(event) {
     });
 
     form.reset();
-    
-    const prm = new Promise((resolve, reject) => {
+
+
+    const promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
         if (state == "fulfilled") {
                 resolve(delay)   
          } else {
              reject(delay);
         }
-        
+         }, delay)
     })
 
-    prm 
+    promise
         .then((delay)=> {
-            setTimeout(() => {
                 showMsg(`✅ Fulfilled promise in ${delay} ms`, 'green');
-            }, delay)
-        
         })
         .catch((delay) => {
-            setTimeout(() => {
+                console.log("value ", state);
                 showMsg(`❌ Rejected promise in ${delay} ms`, 'red');
 
-        },delay)
         })
 }
 
