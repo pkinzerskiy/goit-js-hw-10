@@ -1,38 +1,27 @@
-'use strict';
-// Описаний у документації
-import iziToast from "izitoast";
-// Додатковий імпорт стилів
-import "izitoast/dist/css/iziToast.min.css";
-// import { document } from "postcss";
-const btn = document.querySelector("button");
-btn.addEventListener("click", handleBtn);
+"use strict";
 
-let delay;
-const num = document.querySelector('input');
-num.addEventListener("input", (event) => {
-    console.log("form-input", event.target.value);
-    delay = event.target.value;
-});
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 
 const form = document.querySelector('form');
-
-let states = document.querySelectorAll('input[type="radio"]');
+form.addEventListener("submit", handleBtn);
 
 function handleBtn(event) {
     event.preventDefault();
-
-    let state;
- 
-    states.forEach(el => {
-        if (el.checked) {
-            state = el.value;
-        } 
-    });
-
+    const delay = Number(event.target.elements.delay.value);
+    const state = event.target.elements.state.value;
+    // console.log("timer", typeof delay);
     form.reset();
 
+     if (!delay) {
+        console.log("час не обрано");
+        return
+    }
 
     const promise = new Promise((resolve, reject) => {
+       
+        console.log("delay", delay)
+        
         setTimeout(() => {
         if (state == "fulfilled") {
                 resolve(delay)   
@@ -43,7 +32,8 @@ function handleBtn(event) {
     })
 
     promise
-        .then((delay)=> {
+        .then((delay) => {
+                console.log("value ", state);
                 showMsg(`✅ Fulfilled promise in ${delay} ms`, 'green');
         })
         .catch((delay) => {
@@ -63,3 +53,7 @@ function showMsg(msg, color) {
     
 });
 }
+
+
+
+
